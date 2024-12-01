@@ -33,17 +33,21 @@ func main() {
 		input2 = append(input2, i2)
 	}
 
+	// Similarity
+
+	sim := 0
+	for _, i := range input1 {
+		sim += i * findSimilar(i, input2)
+	}
+	fmt.Println("Similarity", sim)
+
+	// Distance
 	todo := len(input1)
 	length := 0
 
-	i1, x1, _ := findSmallest(input1)
-
-	i2, x2, _ := findSmallest(input2)
-	fmt.Println(i1, x1, i2, x2)
-
 	for todo > 0 {
 		todo--
-		l, i1, i2, err := run(input1, input2)
+		l, i1, i2, err := runSmall(input1, input2)
 		if err != nil {
 			fmt.Println("Errror:", err)
 			continue
@@ -52,14 +56,22 @@ func main() {
 		input1 = i1
 		input2 = i2
 		length += l
-		fmt.Println(l, length)
 	}
-
-	fmt.Println(length)
+	fmt.Println("Length:", length)
 
 }
 
-func run(input1 []int, input2 []int) (int, []int, []int, error) {
+func findSimilar(i int, input []int) int {
+	times := 0
+	for _, n := range input {
+		if n == i {
+			times++
+		}
+	}
+	return times
+}
+
+func runSmall(input1 []int, input2 []int) (int, []int, []int, error) {
 	i1, x1, err := findSmallest(input1)
 	if err != nil {
 		return 0, []int{}, []int{}, err
